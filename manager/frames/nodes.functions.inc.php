@@ -4,9 +4,9 @@ if (!defined('IN_MANAGER_MODE') || IN_MANAGER_MODE !== true) {
 }
 
 /**
- * @param $indent
- * @param $parent
- * @param $expandAll
+ * @param int $indent
+ * @param int $parent
+ * @param int $expandAll
  * @param string $hereid
  * @return string
  */
@@ -80,10 +80,8 @@ function makeHTML($indent, $parent, $expandAll, $hereid = '')
 
     while ($row = $modx->db->getRow($result)) {
         $node = '';
-
         $nodetitle = getNodeTitle($nodeNameSource, $row);
         $nodetitleDisplay = $nodetitle;
-
         $treeNodeClass = 'node';
         $treeNodeClass .= $row['hasAccess'] == 0 ? ' protected' : '';
 
@@ -93,7 +91,6 @@ function makeHTML($indent, $parent, $expandAll, $hereid = '')
             $treeNodeClass .= ' unpublished';
         } elseif ($row['hidemenu'] == 1) {
             $treeNodeClass .= ' hidemenu';
-        } else {
         }
 
         if ($row['id'] == $hereid) {
@@ -403,7 +400,6 @@ function makeHTML($indent, $parent, $expandAll, $hereid = '')
                         'ph' => $ph,
                         'opened' => '0'
                     ));
-
                     if (is_array($prenode)) {
                         $phnew = array();
                         foreach ($prenode as $pnode) {
@@ -445,6 +441,10 @@ function makeHTML($indent, $parent, $expandAll, $hereid = '')
     return $output;
 }
 
+/**
+ * @param array $_style
+ * @return array
+ */
 function getIconInfo($_style)
 {
     if (!isset($_style['tree_page_gif'])) {
@@ -473,6 +473,11 @@ function getIconInfo($_style)
     );
 }
 
+/**
+ * @param string $nodeNameSource
+ * @param array $row
+ * @return string
+ */
 function getNodeTitle($nodeNameSource, $row)
 {
     global $modx;
@@ -517,9 +522,14 @@ function getNodeTitle($nodeNameSource, $row)
         "\n",
         "\r"
     ), ' ', $nodetitle), ENT_COMPAT);
+
     return $nodetitle;
 }
 
+/**
+ * @param string $nodeNameSource
+ * @return bool
+ */
 function isDateNode($nodeNameSource)
 {
     switch ($nodeNameSource) {
@@ -534,6 +544,11 @@ function isDateNode($nodeNameSource)
     }
 }
 
+/**
+ * @param int $parent
+ * @param int $isfolder
+ * @return int
+ */
 function checkIsFolder($parent = 0, $isfolder = 1)
 {
     global $modx;
@@ -541,6 +556,10 @@ function checkIsFolder($parent = 0, $isfolder = 1)
     return (int)$modx->db->getValue($modx->db->query('SELECT count(*) FROM ' . $modx->getFullTableName('site_content') . ' WHERE parent=' . $parent . ' AND isfolder=' . $isfolder . ' '));
 }
 
+/**
+ * @param mixed $array
+ * @return string
+ */
 function _htmlentities($array)
 {
     global $modx;
@@ -551,6 +570,9 @@ function _htmlentities($array)
     return $array;
 }
 
+/**
+ * @return string
+ */
 function getTplSingleNode()
 {
     return '<div id="node[+id+]"><a class="[+treeNodeClass+]"
@@ -576,6 +598,9 @@ function getTplSingleNode()
         title="[+title+]">[+nodetitleDisplay+][+weblinkDisplay+]</span>[+pageIdDisplay+]</a></div>';
 }
 
+/**
+ * @return string
+ */
 function getTplFolderNode()
 {
     return '<div id="node[+id+]"><a class="[+treeNodeClass+]"
@@ -613,6 +638,9 @@ function getTplFolderNode()
         title="[+title+]">[+nodetitleDisplay+][+weblinkDisplay+]</span>[+pageIdDisplay+]</a><div>';
 }
 
+/**
+ * @return string
+ */
 function getTplFolderNodeNotChildren()
 {
     return '<div id="node[+id+]"><a class="[+treeNodeClass+]"
